@@ -10,27 +10,32 @@ async function bootstrap() {
     AppModule,
   );
 
-  // Autoriser le frontend React
+  // Autoriser le frontend local et le frontend déployé
+  const allowedOrigins: string[] = [
+  'http://localhost:5173',
+  process.env.FRONTEND_URL,
+].filter((origin): origin is string => Boolean(origin));
+
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true,
   });
 
-  // Validation des données reçues
   app.useGlobalPipes(
-  new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }),
-);
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
-  // Rendre les images accessibles par HTTP
+  // Accès aux images
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads/',
   });
 
-  await app.listen(process.env.PORT ?? 3000);
+  // Port fourni par Render
+  await app.listen(process.env.PORT || 3000);
 }
 
 bootstrap();
