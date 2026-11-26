@@ -42,6 +42,7 @@
 
 
 
+
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
@@ -53,14 +54,17 @@ async function bootstrap() {
     AppModule,
   );
 
-  const allowedOrigins: string[] = [
+  const allowedOrigins = [
     'http://localhost:5173',
+    'https://teranga-market-frontend-frx7ewvgw-daba-gueyes-projects.vercel.app',
     process.env.FRONTEND_URL,
   ].filter((origin): origin is string => Boolean(origin));
 
   app.enableCors({
     origin: allowedOrigins,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   app.useGlobalPipes(
