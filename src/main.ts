@@ -1,4 +1,3 @@
-
 // import { NestFactory } from '@nestjs/core';
 // import type { NestExpressApplication } from '@nestjs/platform-express';
 // import { ValidationPipe } from '@nestjs/common';
@@ -40,23 +39,27 @@
 
 // bootstrap();
 
-
-
-
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import { join } from 'node:path';
 import { AppModule } from './app.module.js';
 
+import cloudinary from './config/cloudinary.config.js';
+
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(
-    AppModule,
-  );
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Configuration Cloudinary après le chargement du .env
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
 
   const allowedOrigins = [
     'http://localhost:5173',
-    'https://teranga-market-frontend-frx7ewvgw-daba-gueyes-projects.vercel.app',
+    'https://teranga-market-frontend.vercel.app',
     process.env.FRONTEND_URL,
   ].filter((origin): origin is string => Boolean(origin));
 
